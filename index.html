@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Modern</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-flex-wrapper">
+        <div class="calculator-container">
+            <div class="calculator-switch">
+                <div class="switch-button active" id="standard-switch">Standard</div>
+                <div class="switch-button" id="scientific-switch">Scientific</div>
+            </div>
+
+            <div class="calculator standard active" id="standard-calculator">
+                <div class="display-area">
+                    <div class="secondary-display" id="standard-secondary-display"></div>
+                    <div class="main-display" id="standard-main-display">0</div>
+                    <div class="total-amount-display">
+                        <span class="total-amount-label">TOTAL AMOUNT:</span>
+                        <span class="total-amount-value" id="standard-total-amount">0</span>
+                    </div>
+                </div>
+                <div class="buttons-grid">
+                    <button class="button" data-type="clear" data-value="C">C</button>
+                    <button class="button" data-type="percent" data-value="%">%</button>
+                    <button class="button" data-type="operator" data-value="/">&divide;</button>
+                    <button class="button" data-type="operator" data-value="*">&times;</button>
+
+                    <button class="button" data-type="number" data-value="7">7</button>
+                    <button class="button" data-type="number" data-value="8">8</button>
+                    <button class="button" data-type="number" data-value="9">9</button>
+                    <button class="button" data-type="operator" data-value="-">-</button>
+
+                    <button class="button" data-type="number" data-value="4">4</button>
+                    <button class="button" data-type="number" data-value="5">5</button>
+                    <button class="button" data-type="number" data-value="6">6</button>
+                    <button class="button" data-type="operator" data-value="+">+</button>
+
+                    <button class="button" data-type="number" data-value="1">1</button>
+                    <button class="button" data-type="number" data-value="2">2</button>
+                    <button class="button" data-type="number" data-value="3">3</button>
+                    <button class="button" data-type="equals" data-value="=">=</button>
+
+                    <button class="button" data-type="number" data-value="0">0</button>
+                    <button class="button" data-type="number" data-value=".">.</button>
+                </div>
+            </div>
+
+            <div class="calculator scientific" id="scientific-calculator">
+                <div class="display-area">
+                    <div class="secondary-display" id="scientific-secondary-display"></div>
+                    <div class="main-display" id="scientific-main-display">0</div>
+                    <div class="total-amount-display">
+                        <span class="total-amount-label">TOTAL AMOUNT:</span>
+                        <span class="total-amount-value" id="scientific-total-amount">0</span>
+                    </div>
+                </div>
+                <div class="buttons-grid">
+                    <button class="button scientific-button" data-type="function" data-value="(">(</button>
+                    <button class="button scientific-button" data-type="function" data-value=")">)</button>
+                    <button class="button scientific-button" data-type="function" data-value="pi">&pi;</button>
+                    <button class="button scientific-button" data-type="function" data-value="e">e</button>
+                    <button class="button" data-type="clear" data-value="C">C</button>
+                    <button class="button" data-type="percent" data-value="%">%</button>
+
+                    <button class="button scientific-button" data-type="function" data-value="x^2">x²</button>
+                    <button class="button scientific-button" data-type="function" data-value="x^y">xʸ</button>
+                    <button class="button scientific-button" data-type="function" data-value="sqrt">&radic;x</button>
+                    <button class="button scientific-button" data-type="function" data-value="inv">1/x</button>
+                    <button class="button" data-type="operator" data-value="/"> &divide;</button>
+                    <button class="button" data-type="operator" data-value="*">&times;</button>
+
+                    <button class="button" data-type="number" data-value="7">7</button>
+                    <button class="button" data-type="number" data-value="8">8</button>
+                    <button class="button" data-type="number" data-value="9">9</button>
+                    <button class="button scientific-button" data-type="function" data-value="sin">sin</button>
+                    <button class="button scientific-button" data-type="function" data-value="asin">sin⁻¹</button>
+                    <button class="button" data-type="operator" data-value="-">-</button>
+
+                    <button class="button" data-type="number" data-value="4">4</button>
+                    <button class="button" data-type="number" data-value="5">5</button>
+                    <button class="button" data-type="number" data-value="6">6</button>
+                    <button class="button scientific-button" data-type="function" data-value="cos">cos</button>
+                    <button class="button scientific-button" data-type="function" data-value="acos">cos⁻¹</button>
+                    <button class="button" data-type="operator" data-value="+">+</button>
+
+                    <button class="button" data-type="number" data-value="1">1</button>
+                    <button class="button" data-type="number" data-value="2">2</button>
+                    <button class="button" data-type="number" data-value="3">3</button>
+                    <button class="button scientific-button" data-type="function" data-value="tan">tan</button>
+                    <button class="button scientific-button" data-type="function" data-value="atan">tan⁻¹</button>
+                    <button class="button scientific-button" data-type="function" data-value="factorial_val">n!</button> <button class="button" data-type="number" data-value="0">0</button>
+                    <button class="button" data-type="number" data-value=".">.</button>
+                    <button class="button scientific-button" data-type="function" data-value="log">log</button>
+                    <button class="button scientific-button" data-type="function" data-value="log10">log₁₀</button>
+                    <button class="button scientific-button" data-type="function" data-value="mod">mod</button>
+                    <button class="button" data-type="equals" data-value="=">=</button>
+                </div>
+            </div>
+        </div>
+        <div class="history-panel">
+            <div class="history-title">History</div>
+            <ul class="history-list" id="history-list">
+                </ul>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
