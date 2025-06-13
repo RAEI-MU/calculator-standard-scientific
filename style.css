@@ -38,7 +38,7 @@ body {
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    border: 2px solid #81c784; /* Border hijau terang */
+    border: 2px solid #81c784;
 }
 
 .calculator-switch {
@@ -126,12 +126,12 @@ body {
 }
 
 .total-amount-display {
-    background-color: var(--button-bg-light); /* Menggunakan warna yang lebih sesuai */
+    background-color: var(--button-bg-light);
     border-radius: var(--button-border-radius);
     padding: 10px 15px;
     margin-top: 15px;
     font-size: 1em;
-    color: var(--display-text-color); /* Warna teks disesuaikan */
+    color: var(--display-text-color);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -149,7 +149,7 @@ body {
 .buttons-grid {
     display: grid;
     gap: 12px;
-    grid-template-columns: repeat(6, 1fr); /* Default untuk saintifik */
+    grid-template-columns: repeat(6, 1fr);
     flex-grow: 0;
     padding-bottom: 24px;
 }
@@ -216,13 +216,10 @@ body {
     background-color: var(--accent);
     color: #fff;
     font-weight: 700;
-    /* Hapus atau komen baris di bawah ini jika ada: */
-    /* grid-column: span 2; */
     box-shadow: 0 4px 16px rgba(67,160,71,0.18);
     border: 2px solid var(--accent);
 }
 
-/* Scientific button */
 .scientific-button {
     font-size: 0.95em;
     padding: 10px 0;
@@ -246,7 +243,7 @@ body {
 }
 
 .scientific-button[data-value="factorial"],
-.scientific-button[data-value="factorial_val"] { /* Tambahkan ini */
+.scientific-button[data-value="factorial_val"] {
     text-transform: lowercase;
 }
 
@@ -254,11 +251,9 @@ body {
     font-weight: 600;
 }
 
-/* Penyesuaian untuk tombol equals di kalkulator saintifik */
 .calculator.scientific .button[data-type="equals"] {
-    grid-column: span 2; /* Agar memanjang 2 kolom */
+    grid-column: span 2;
 }
-
 
 .app-flex-wrapper {
     display: flex;
