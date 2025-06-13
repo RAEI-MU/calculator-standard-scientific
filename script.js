@@ -21,20 +21,18 @@ function switchCalculatorMode(mode) {
         scientificSwitch.classList.add('active');
     }
     currentMode = mode;
-    // Clear display when switching modes
     activeCalculator.clear();
 }
 
 standardSwitch.addEventListener('click', () => switchCalculatorMode('standard'));
 scientificSwitch.addEventListener('click', () => switchCalculatorMode('scientific'));
 
-// --- Kalkulator Utama (Class-based untuk Modularitas) ---
 class Calculator {
     constructor(mainDisplayId, secondaryDisplayId, totalAmountId) {
         this.mainDisplay = document.getElementById(mainDisplayId);
         this.secondaryDisplay = document.getElementById(secondaryDisplayId);
         this.totalAmountDisplay = document.getElementById(totalAmountId);
-        this.clear(); // Initialize state
+        this.clear();
     }
 
     clear() {
@@ -52,10 +50,9 @@ class Calculator {
             this.currentExpression = number;
             this.isResultDisplayed = false;
         } else {
-            // Prevent multiple leading zeros (e.g., "007")
             if (this.currentExpression === '0' && number !== '.') {
                 this.currentExpression = number;
-            } else if (number === '.' && this.currentExpression.includes('.')) { // Perbaiki cek titik desimal
+            } else if (number === '.' && this.currentExpression.includes('.')) {
                 return;
             } else {
                 this.currentExpression += number;
@@ -65,18 +62,13 @@ class Calculator {
     }
 
     appendOperator(operator) {
-        this.isResultDisplayed = false; // Allow typing numbers after operator
-
+        this.isResultDisplayed = false;
         const lastChar = this.currentExpression.slice(-1);
-
-        // Jika ekspresi kosong dan operator adalah '-' (untuk angka negatif awal)
         if (this.currentExpression === '' && operator === '-') {
             this.currentExpression = '-';
             this.updateDisplay();
             return;
         }
-
-        // Ganti operator terakhir jika operator berturut-turut ditekan
         if (['+', '-', '*', '/'].includes(lastChar)) {
             this.currentExpression = this.currentExpression.slice(0, -1) + operator;
         } else {
@@ -90,7 +82,6 @@ class Calculator {
             this.currentExpression = '';
             this.isResultDisplayed = false;
         }
-
         if (value === '(') {
             this.parenthesisCount++;
             this.currentExpression += '(';
@@ -103,7 +94,6 @@ class Calculator {
         this.updateDisplay();
     }
 
-    // Fungsi faktorial di luar eval() untuk kejelasan dan efisiensi
     factorial(n) {
         if (!Number.isInteger(n) || n < 0) {
             throw new Error("Invalid input for factorial. Must be a non-negative integer.");
@@ -116,32 +106,18 @@ class Calculator {
 
     calculate() {
         if (this.currentExpression === '') return;
-
         try {
             const expressionForHistory = this.currentExpression;
             let evalExpression = this.currentExpression;
-
-            // Pastikan semua tanda kurung terbuka ditutup untuk evaluasi
             while (this.parenthesisCount > 0) {
                 evalExpression += ')';
                 this.parenthesisCount--;
             }
-
-            // LANGKAH 1: Ganti simbol yang tidak dikenal oleh JS dan operator pangkat
             evalExpression = evalExpression
                 .replace(/×/g, '*')
                 .replace(/÷/g, '/')
-                .replace(/([0-9.]+)\^([0-9.]+)/g, 'Math.pow($1, $2)') // Handle x^y
+                .replace(/([0-9.]+)\^([0-9.]+)/g, 'Math.pow($1, $2)')
                 .replace(/mod/g, '%');
-
-            // LANGKAH 2: Ganti fungsi saintifik, pastikan argumennya dievaluasi jika itu ekspresi
-            // Ini adalah bagian yang paling menantang dengan eval().
-            // Solusi terbaik adalah parser RPN.
-            // Untuk sementara, kita akan mencoba mengevaluasi argumen fungsi secara terpisah
-            // Atau, kita bisa membuat fungsi JS yang sesuai yang akan dipanggil oleh eval()
-
-            // Define temporary helper functions for eval if needed
-            // This is a workaround for eval's limitation on parsing nested functions easily
             const _tempFactorial = (n) => this.factorial(n);
             const _tempSin = (deg) => Math.sin(parseFloat(deg) * Math.PI / 180);
             const _tempCos = (deg) => Math.cos(parseFloat(deg) * Math.PI / 180);
@@ -149,12 +125,10 @@ class Calculator {
             const _tempAsin = (val) => (Math.asin(parseFloat(val)) * 180 / Math.PI);
             const _tempAcos = (val) => (Math.acos(parseFloat(val)) * 180 / Math.PI);
             const _tempAtan = (val) => (Math.atan(parseFloat(val)) * 180 / Math.PI);
-            const _tempLog = (val) => Math.log(parseFloat(val)); // Natural Log
-            const _tempLog10 = (val) => Math.log10(parseFloat(val)); // Base 10 Log
+            const _tempLog = (val) => Math.log(parseFloat(val));
+            const _tempLog10 = (val) => Math.log10(parseFloat(val));
             const _tempSqrt = (val) => Math.sqrt(parseFloat(val));
             const _tempInv = (val) => (1 / parseFloat(val));
-
-
             evalExpression = evalExpression
                 .replace(/π/g, 'Math.PI')
                 .replace(/e/g, 'Math.E')
@@ -168,21 +142,12 @@ class Calculator {
                 .replace(/log10\(([^)]+)\)/g, `_tempLog10($1)`)
                 .replace(/sqrt\(([^)]+)\)/g, `_tempSqrt($1)`)
                 .replace(/inv\(([^)]+)\)/g, `_tempInv($1)`)
-                .replace(/(\d+)!/g, `_tempFactorial($1)`); // Faktorial
-
-
-            // Untuk debugging, lihat ekspresi yang akan dievaluasi
-            console.log("Eval Expression:", evalExpression);
-
-            // Validasi karakter yang diizinkan sebelum eval (disesuaikan)
-            // Karakter yang diizinkan: angka, operator dasar, ., spasi, Math, PI, E, nama fungsi JS yang digunakan, _tempFunctions
+                .replace(/(\d+)!/g, `_tempFactorial($1)`);
             const allowedCharsRegex = /^[0-9+\-*/().\sPIMath_tempFactorial_tempSin_tempCos_tempTan_tempAsin_tempAcos_tempAtan_tempLog_tempLog10_tempSqrt_tempInv]+$/;
             if (!allowedCharsRegex.test(evalExpression)) {
                 throw new Error("Invalid characters detected in expression.");
             }
-
-            let result = eval(evalExpression); // DANGER: Use with caution!
-
+            let result = eval(evalExpression);
             if (!Number.isFinite(result)) {
                 if (isNaN(result)) {
                     throw new Error("Result is Not a Number (NaN)");
@@ -190,16 +155,13 @@ class Calculator {
                     throw new Error("Division by zero");
                 }
             }
-
             result = parseFloat(result.toFixed(10));
-
             this.mainDisplay.textContent = result;
             this.totalAmountDisplay.textContent = result;
             this.lastResult = result;
             this.currentExpression = result.toString();
             this.isResultDisplayed = true;
             this.parenthesisCount = 0;
-
             addToHistory(expressionForHistory, result);
         } catch (error) {
             this.mainDisplay.textContent = 'Error';
@@ -217,18 +179,14 @@ class Calculator {
             this.currentExpression = this.lastResult !== null ? this.lastResult.toString() : '';
             this.isResultDisplayed = false;
         }
-
-        // Variabel untuk menyimpan argumen jika fungsi diterapkan ke angka terakhir
         let lastNumber = null;
         const matchLastNum = this.currentExpression.match(/(\d+(\.\d+)?)$/);
         if (matchLastNum) {
             lastNumber = matchLastNum[0];
         }
-
         switch (func) {
             case 'pi':
             case 'e':
-                // Hindari menambahkan PI/E langsung setelah angka tanpa operator
                 if (lastNumber !== null && (lastNumber !== '' || this.currentExpression.endsWith('.'))) {
                     this.currentExpression += '*' + (func === 'pi' ? 'π' : 'e');
                 } else {
@@ -243,13 +201,13 @@ class Calculator {
                 }
                 break;
             case 'x^y':
-                this.currentExpression += '^'; // Operator pangkat kustom
+                this.currentExpression += '^';
                 break;
             case 'sqrt':
                 this.currentExpression += 'sqrt(';
                 this.parenthesisCount++;
                 break;
-            case 'inv': // 1/x
+            case 'inv':
                 if (lastNumber) {
                     this.currentExpression = this.currentExpression.slice(0, -lastNumber.length) + `inv(${lastNumber})`;
                 } else {
@@ -263,19 +221,19 @@ class Calculator {
             case 'asin':
             case 'acos':
             case 'atan':
-            case 'log': // Natural log
-            case 'log10': // Base 10 log
+            case 'log':
+            case 'log10':
                 this.currentExpression += func + '(';
                 this.parenthesisCount++;
                 break;
             case 'mod':
-                this.currentExpression += 'mod'; // Tambahkan 'mod' sebagai penanda
+                this.currentExpression += 'mod';
                 break;
-            case 'factorial_val': // Menggunakan data-value yang berbeda
+            case 'factorial_val':
                 if (lastNumber) {
                     this.currentExpression = this.currentExpression.slice(0, -lastNumber.length) + `${lastNumber}!`;
                 } else {
-                    this.currentExpression += '!'; // Membiarkan pengguna mengetik angka diikuti !
+                    this.currentExpression += '!';
                 }
                 break;
             default:
@@ -287,20 +245,15 @@ class Calculator {
     handlePercentage() {
         if (this.currentExpression === '') return;
         try {
-            // Evaluasi ekspresi saat ini, lalu terapkan persentase
             let tempResult;
             try {
-                // Gunakan eval() untuk mendapatkan nilai numerik dari ekspresi saat ini
-                // Lakukan penggantian yang sama seperti di calculate() untuk evaluasi internal
                 let tempEvalExpression = this.currentExpression
                     .replace(/×/g, '*')
                     .replace(/÷/g, '/')
                     .replace(/([0-9.]+)\^([0-9.]+)/g, 'Math.pow($1, $2)')
                     .replace(/mod/g, '%');
-                // Untuk fungsi saintifik di persentase, Anda mungkin perlu mengevaluasinya juga
                 tempResult = eval(tempEvalExpression);
             } catch (evalError) {
-                // Jika ekspresi tidak valid untuk eval sebelum %, gunakan angka terakhir
                 const lastNumMatch = this.currentExpression.match(/(\d+(\.\d+)?)$/);
                 if (lastNumMatch) {
                     tempResult = parseFloat(lastNumMatch[0]);
@@ -308,7 +261,6 @@ class Calculator {
                     throw new Error("Invalid expression for percentage.");
                 }
             }
-
             if (!isNaN(tempResult)) {
                 const percentageValue = tempResult / 100;
                 this.currentExpression = percentageValue.toString();
@@ -329,26 +281,21 @@ class Calculator {
     updateDisplay() {
         this.mainDisplay.textContent = this.currentExpression === '' ? '0' : this.currentExpression;
         this.secondaryDisplay.textContent = this.currentExpression;
-
-        // Total amount display harus mencerminkan apa yang ada di main display
         this.totalAmountDisplay.textContent = this.mainDisplay.textContent;
     }
 }
 
-// Instantiate calculators
 const standardCalc = new Calculator('standard-main-display', 'standard-secondary-display', 'standard-total-amount');
 const scientificCalc = new Calculator('scientific-main-display', 'scientific-secondary-display', 'scientific-total-amount');
 
-let activeCalculator = standardCalc; // Keep track of the currently active calculator instance
+let activeCalculator = standardCalc;
 
-// Fungsi untuk menambahkan event listener ke setiap tombol
 function attachEventListeners(calculatorInstance, containerId) {
     const buttons = document.querySelectorAll(`#${containerId} .button`);
     buttons.forEach(button => {
         button.addEventListener('click', () => {
             const type = button.dataset.type;
             const value = button.dataset.value;
-
             if (type === 'number') {
                 calculatorInstance.appendNumber(value);
             } else if (type === 'operator') {
@@ -366,17 +313,14 @@ function attachEventListeners(calculatorInstance, containerId) {
                     calculatorInstance.handleScientificFunction(value);
                 }
             }
-            // Update active calculator reference after a click
             activeCalculator = calculatorInstance;
         });
     });
 }
 
-// Attach listeners to both calculators
 attachEventListeners(standardCalc, 'standard-calculator');
 attachEventListeners(scientificCalc, 'scientific-calculator');
 
-// Override switch mode to update activeCalculator instance
 standardSwitch.addEventListener('click', () => {
     switchCalculatorMode('standard');
     activeCalculator = standardCalc;
@@ -386,11 +330,9 @@ scientificSwitch.addEventListener('click', () => {
     activeCalculator = scientificCalc;
 });
 
-// Initial clear for both calculators
 standardCalc.clear();
 scientificCalc.clear();
 
-// History
 function addToHistory(expression, result) {
     if (!historyList) return;
     const li = document.createElement('li');
